@@ -1,21 +1,27 @@
 name: Deploy North4 website
 
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '7 2 * * *'
-    - cron: '7 13 * * *'
+    - cron: '7 2 * * *'→ Runs at 02:07
+
+    - cron: '7 13 * * *'→ Runs at 13:07
+
+
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 
 jobs:
   deploy:
@@ -30,7 +36,7 @@ jobs:
           mkdir -p _site
           dl() { curl -fsSL "https://drive.usercontent.google.com/download?id=$1&export=download&confirm=t" -o "$2"; }
           cp CNAME 404.html favicon.svg _site/
-          dl 1aRr2YOFdFHEGMuhNnbqimsFD87Z9nsvl _site/index.html
+          dl 1jkFskK3NOFcYB9aQgAF32smFWkfT6dT8 _site/index.html
           grep -q "North4 Agency" _site/index.html
           dl 1DRlE0-mmzhFwfFUFmRKUwQD7GUt06GAo _site/llms.txt
           dl 1Q-H3scnrosDqk0u6WG1EOtdu29nffRi5 _site/robots.txt
@@ -45,3 +51,4 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+
