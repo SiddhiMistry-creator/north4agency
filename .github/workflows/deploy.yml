@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build site (homepage comes from Google Drive: North4 HQ / Website / index.html)
+      - name: Build site - homepage from Google Drive (North4 HQ / Website / index.html)
         run: |
           mkdir -p _site
           cp CNAME 404.html robots.txt sitemap.xml favicon.svg _site/
