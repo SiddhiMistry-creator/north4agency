@@ -1,17 +1,22 @@
 name: Deploy North4 website
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '30 0 * * *'
+    - cron: '7 2 * * *'
+    - cron: '7 13 * * *'
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   deploy:
     environment:
@@ -20,12 +25,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build site - homepage from Google Drive (North4 HQ / Website / index.html)
+      - name: Build site - everything comes from Google Drive (North4 HQ / Website)
         run: |
           mkdir -p _site
-          cp CNAME 404.html robots.txt sitemap.xml favicon.svg _site/
-          curl -fsSL "https://drive.usercontent.google.com/download?id=1aRr2YOFdFHEGMuhNnbqimsFD87Z9nsvl&export=download&confirm=t" -o _site/index.html
+          dl() { curl -fsSL "https://drive.usercontent.google.com/download?id=$1&export=download&confirm=t" -o "$2"; }
+          cp CNAME 404.html favicon.svg _site/
+          dl 1aRr2YOFdFHEGMuhNnbqimsFD87Z9nsvl _site/index.html
           grep -q "North4 Agency" _site/index.html
+          dl 1DRlE0-mmzhFwfFUFmRKUwQD7GUt06GAo _site/llms.txt
+          dl 1Q-H3scnrosDqk0u6WG1EOtdu29nffRi5 _site/robots.txt
+          dl 1MuKPDQx6cHsGG0rAwoXe3jtyogCoNQBy _site/bridge.html
+          dl 169Vj_GTVRZrz-HA5uktqCu4slAiLQOCy build_site.py
+          printf 'c4bfd4488b06f8eec88700fd32a9b20f' > _site/c4bfd4488b06f8eec88700fd32a9b20f.txt
+          python3 build_site.py
+          ls -R _site | head -50
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
