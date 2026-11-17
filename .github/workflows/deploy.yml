@@ -1,27 +1,21 @@
 name: Deploy North4 website
 
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '7 2 * * *'→ Runs at 02:07
-
-    - cron: '7 13 * * *'→ Runs at 13:07
-
-
+    - cron: '7 2 * * *'
+    - cron: '7 13 * * *'
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-
 concurrency:
   group: pages
   cancel-in-progress: true
-
 
 jobs:
   deploy:
@@ -51,4 +45,3 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
-
