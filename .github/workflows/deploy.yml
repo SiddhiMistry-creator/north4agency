@@ -1,0 +1,34 @@
+name: Deploy North4 website
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '30 0 * * *'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site (homepage comes from Google Drive: North4 HQ / Website / index.html)
+        run: |
+          mkdir -p _site
+          cp CNAME 404.html robots.txt sitemap.xml favicon.svg _site/
+          curl -fsSL "https://drive.usercontent.google.com/download?id=1aRr2YOFdFHEGMuhNnbqimsFD87Z9nsvl&export=download&confirm=t" -o _site/index.html
+          grep -q "North4 Agency" _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
